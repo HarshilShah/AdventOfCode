@@ -308,3 +308,5 @@ func partTwo() -> String {
 
 print(partOne())
 print(partTwo())
+
+//: [Next](@next)
