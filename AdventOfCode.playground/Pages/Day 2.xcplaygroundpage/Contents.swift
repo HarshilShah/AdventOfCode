@@ -254,11 +254,9 @@ uqcipadzwtnhesogvxjormkfmr
 uqcipadzwtnhetcgvxgobmkfyr
 """
 
+let text = input.components(separatedBy: .newlines)
+
 func partOne() -> String {
-    let text = input
-        .trimmingCharacters(in: .whitespacesAndNewlines)
-        .components(separatedBy: .newlines)
-    
     var twoRepeats = 0
     var threeRepeats = 0
     
@@ -279,12 +277,8 @@ func partOne() -> String {
 }
 
 func partTwo() -> String {
-    let text = input
-        .trimmingCharacters(in: .whitespacesAndNewlines)
-        .components(separatedBy: .newlines)
-    
     for (indexOne, valueOne) in text.enumerated() {
-        for (_, valueTwo) in Array(text.dropFirst(indexOne + 1)).enumerated() {
+        for valueTwo in Array(text.dropFirst(indexOne + 1)) {
             var diff = 0
             
             for (c1, c2) in zip(valueOne, valueTwo) {

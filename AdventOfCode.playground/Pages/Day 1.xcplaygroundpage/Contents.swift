@@ -1014,23 +1014,16 @@ let input = """
 +73808
 """
 
+let numbers = input
+    .components(separatedBy: .newlines)
+    .map { Int($0)! }
+
 func partOne() -> String {
-    let numbers = input
-        .trimmingCharacters(in: .whitespacesAndNewlines)
-        .components(separatedBy: .newlines)
-        .map { Int($0)! }
-    
-    let total = numbers.reduce(0, { $0 + $1 })
-    
+    let total = numbers.reduce(0, +)
     return "\(total)"
 }
 
 func partTwo() -> String {
-    let numbers = input
-        .trimmingCharacters(in: .whitespacesAndNewlines)
-        .components(separatedBy: .newlines)
-        .map { Int($0)! }
-    
     var visited: Set<Int> = [0]
     var output = 0
     

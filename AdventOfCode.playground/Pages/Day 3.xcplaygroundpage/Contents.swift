@@ -1369,30 +1369,51 @@ let input = """
 #1365 @ 824,458: 28x17
 """
 
-let testInput = """
-#1 @ 1,3: 4x4
-#2 @ 3,1: 4x4
-#3 @ 5,5: 2x2
-"""
+extension String {
+    var integers: [Int] {
+        return self
+            .split{ "-0123456789".contains($0) == false }
+            .map { Int($0)! }
+    }
+}
 
-let lines = input
-    .trimmingCharacters(in: .whitespaces)
-    .components(separatedBy: .newlines)
+extension Sequence {
+    func count(where predicate: (Element) throws -> Bool) rethrows -> Int {
+        var count = 0
+        for element in self {
+            if try predicate(element) {
+                count += 1
+            }
+        }
+        return count
+    }
+}
 
+struct Claim {
+    let id: Int
+    let x: Int
+    let y: Int
+    let width: Int
+    let height: Int
+}
+
+let lines = input.components(separatedBy: .newlines)
+var claims: [Claim] = []
 var board = Array(repeating: Array(repeating: 0, count: 2000), count: 2000)
 
 lines.forEach { line in
-    let components = line.components(separatedBy: .whitespaces)
-    let insets = components[2]
-    let xInset = Int(insets.components(separatedBy: .punctuationCharacters)[0])!
-    let yInset = Int(insets.components(separatedBy: .punctuationCharacters)[1])!
+    let numbers = line.integers
     
-    let size = components[3]
-    let xSize = Int(size.prefix(while: { $0 != "x" }))!
-    let ySize = Int(size.drop(while: { $0 != "x" }).dropFirst())!
+    let id = numbers[0]
+    let x = numbers[1]
+    let y = numbers[2]
+    let width = numbers[3]
+    let height = numbers[4]
     
-    (xInset ..< xInset + xSize).forEach { x in
-        (yInset ..< yInset + ySize).forEach { y in
+    claims.append(Claim(id: id, x: x, y: y, width: width, height: height))
+    
+    (x ..< x + width).forEach { x in
+        (y ..< y + height).forEach { y in
             board[x][y] += 1
         }
     }
@@ -1400,26 +1421,18 @@ lines.forEach { line in
 
 func partOne() -> String {
     let overlappingCount = board
-        .map { $0.reduce(0, { $1 > 1  ? $0 + 1 : $0 }) }
-        .reduce(0, { $1 > 1 ? $0 + 1 : $0 })
+        .map { $0.count(where: { $0 > 1 }) }
+        .reduce(0, +)
     
     return "\(overlappingCount)"
 }
 
 func partTwo() -> String {
-    for line in lines {
-        let components = line.components(separatedBy: .whitespaces)
-        let insets = components[2]
-        let xInset = Int(insets.components(separatedBy: .punctuationCharacters)[0])!
-        let yInset = Int(insets.components(separatedBy: .punctuationCharacters)[1])!
-        
-        let size = components[3]
-        let xSize = Int(size.prefix(while: { $0 != "x" }))!
-        let ySize = Int(size.drop(while: { $0 != "x" }).dropFirst())!
-        
+    for claim in claims {
         var overlappingCount = 0
-        (xInset ..< xInset + xSize).forEach { x in
-            (yInset ..< yInset + ySize).forEach { y in
+        
+        (claim.x ..< claim.x + claim.width).forEach { x in
+            (claim.y ..< claim.y + claim.height).forEach { y in
                 if board[x][y] != 1 {
                     overlappingCount += 1
                 }
@@ -1427,7 +1440,7 @@ func partTwo() -> String {
         }
         
         if overlappingCount == 0 {
-            return line
+            return "\(claim.id)"
         }
     }
     

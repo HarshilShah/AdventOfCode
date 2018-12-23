@@ -54,14 +54,13 @@ let input = """
 268, 215
 """
 
-let testInput = """
-1, 1
-1, 6
-8, 3
-3, 4
-5, 5
-8, 9
-"""
+extension String {
+    var integers: [Int] {
+        return self
+            .split{ "-0123456789".contains($0) == false }
+            .map { Int($0)! }
+    }
+}
 
 extension Sequence {
     func count(where predicate: (Element) throws -> Bool) rethrows -> Int {
@@ -89,16 +88,13 @@ struct Point: Equatable, Hashable {
 }
 
 let points = input
-    .trimmingCharacters(in: .whitespacesAndNewlines)
     .components(separatedBy: .newlines)
     .map { line -> Point in
-        let components = line
-            .components(separatedBy: .punctuationCharacters)
-            .map { $0.trimmingCharacters(in: .whitespaces) }
-        let x = Int(components[0])!
-        let y = Int(components[1])!
+        let numbers = line.integers
+        let x = numbers[0]
+        let y = numbers[1]
         return Point(x: x, y: y)
-}
+    }
 
 func partOne() -> String {
     func calculateCount(gridSize: Int) -> [Int] {

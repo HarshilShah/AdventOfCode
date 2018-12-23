@@ -1138,10 +1138,13 @@ let input = """
 [1518-11-23 00:22] wakes up
 """
 
-let lines = input
-    .trimmingCharacters(in: .whitespacesAndNewlines)
-    .components(separatedBy: .newlines)
-    .sorted()
+extension String {
+    var positiveIntegers: [Int] {
+        return self
+            .split{ "0123456789".contains($0) == false }
+            .map { Int($0)! }
+    }
+}
 
 class Day {
     let guardId: Int
@@ -1152,26 +1155,27 @@ class Day {
     }
 }
 
+let lines = input.components(separatedBy: .newlines).sorted()
+
 var days: [Day] = []
 
 for line in lines {
-    let components = line.components(separatedBy: .whitespaces)
-    let lineArray = Array(line)
+    let numbers = line.positiveIntegers
     
-    switch components[2] {
+    switch line.components(separatedBy: .whitespaces)[2] {
     case "Guard":
-        let guardId = Int(components[3].dropFirst())!
+        let guardId = numbers[5]
         days.append(Day(guardId: guardId))
         
     case "falls":
         let day = days.last!
-        let asleepMinute = Int(String(lineArray[15]) + String(lineArray[16]))!
+        let asleepMinute = numbers[4]
         day.asleepMinutes[asleepMinute] = true
         
     case "wakes":
         let day = days.last!
         let lastAsleepMinute = day.asleepMinutes.lastIndex(of: true)!
-        let awakeMinute = Int(String(lineArray[15]) + String(lineArray[16]))!
+        let awakeMinute = numbers[4]
         
         for idx in lastAsleepMinute ..< awakeMinute {
             day.asleepMinutes[idx] = true
