@@ -594,8 +594,11 @@ enum Rule {
 func parseRule(_ raw: Substring) -> (index: Int, rule: Rule) {
 	let index = Int(raw.prefix(while: \.isNumber))!
 	let rule: Rule = {
-		if raw.hasSuffix("\"a\"") { return .literal("a") }
-		if raw.hasSuffix("\"b\"") { return .literal("b") }
+		if raw.hasSuffix("\"") {
+			let text = raw.drop(while: { $0 != "\"" }).dropFirst().prefix(while: \.isLetter)
+			return .literal(String(text))
+		}
+		
 		var output: [[Int]] = [[]]
 		raw.drop(while: \.isNumber).dropFirst(2).split(separator: " ").forEach { unit in
 			if let number = Int(unit) {
@@ -610,9 +613,8 @@ func parseRule(_ raw: Substring) -> (index: Int, rule: Rule) {
 }
 
 let lines = input.split(separator: "\n")
-let ruleLineLimit = 139
 let rules = lines.prefix(while: { $0.first?.isNumber == true })
-let messages = lines[ruleLineLimit...]
+let messages = lines.drop(while: { $0.first?.isNumber == true })
 
 var parsedRules = rules
 	.lazy
@@ -621,39 +623,29 @@ var parsedRules = rules
 		dict[indexAndRule.index] = indexAndRule.rule
 	}
 
-func parseMessage(_ input: Substring, rule ruleIndex: Int) -> Substring? {
-	let rule = parsedRules[ruleIndex]!
-	
-	switch rule {
+func parseMessage(_ input: Substring, rule ruleIndex: Int) -> [Substring] {
+	switch parsedRules[ruleIndex]! {
 	case .literal(let literal):
 		
 		return input.hasPrefix(literal)
-			? input.dropFirst(literal.count)
-			: nil
+			? [input.dropFirst(literal.count)]
+			: []
 		
 	case .list(let ruleList):
 		
-		var currentText = input
-		
-		let isMatched = ruleList.contains { rules in
-			currentText = input
+		return ruleList.flatMap { rules -> [Substring] in
+			var current = [input]
 			for rule in rules {
-				if let newText = parseMessage(currentText, rule: rule) {
-					currentText = newText
-				} else {
-					return false
-				}
+				current = current.flatMap { parseMessage($0, rule: rule) }
 			}
-			return true
+			return current
 		}
-		
-		return isMatched ? currentText : nil
 	}
 }
 
 func partOne() -> String {
 	func isValid(_ message: Substring) -> Bool {
-		parseMessage(message, rule: 0) == ""
+		parseMessage(message, rule: 0).contains("")
 	}
 	
 	return messages
@@ -664,22 +656,11 @@ func partOne() -> String {
 }
 
 func partTwo() -> String {
-	
-	var newRules: [[Int]] = []
-	
-	for xCount in (2 ... 10).reversed() {
-		let minY = 1
-		let maxY = min(11 - xCount, xCount - 1)
-		
-		for yCount in (minY ... maxY).reversed() {
-			newRules.append(Array(repeating: 42, count: xCount) + Array(repeating: 31, count: yCount))
-		}
-	}
-	
-	parsedRules[0] = .list(newRules)
+	parsedRules[8] = .list([[42], [42, 8]])
+	parsedRules[11] = .list([[42, 31], [42, 11, 31]])
 	
 	func isValid(_ message: Substring) -> Bool {
-		return parseMessage(message, rule: 0) == ""
+		parseMessage(message, rule: 0).contains("")
 	}
 	
 	return messages
