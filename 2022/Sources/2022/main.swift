@@ -5,7 +5,7 @@ let input = """
 """
 
 let startTime = Date()
-let day = Day2(input: input)
+let day = Day3(input: input)
 print(day.partOne())
 print(day.partTwo())
 let endTime = Date()
