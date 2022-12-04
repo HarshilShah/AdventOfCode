@@ -1,12 +1,27 @@
 import Foundation
 
+typealias CurrentDay = Day3
+
+let testInput = """
+<Insert your test input here>
+"""
+
 let input = """
 <Insert your input here>
 """
 
-let startTime = Date()
-let day = Day3(input: input)
+let startTime = Date.now
+
+print("--- Test Input---")
+let testDay = CurrentDay(input: testInput)
+print(testDay.partOne())
+print(testDay.partTwo())
+
+print("\n--- Input---")
+let day = CurrentDay(input: input)
 print(day.partOne())
 print(day.partTwo())
-let endTime = Date()
-print(endTime.timeIntervalSince(startTime))
+
+let endTime = Date.now
+let executionTime = Measurement(value: endTime.timeIntervalSince(startTime), unit: UnitDuration.seconds)
+print("\nExecution Time: \(executionTime.formatted(.measurement(width: .wide, usage: .asProvided)))")
