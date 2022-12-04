@@ -4,6 +4,9 @@ import PackageDescription
 
 let package = Package(
     name: "2022",
+	platforms: [
+		.macOS(.v13)
+	],
     products: [
 		.executable(name: "2022", targets: ["2022"]),
     ],
