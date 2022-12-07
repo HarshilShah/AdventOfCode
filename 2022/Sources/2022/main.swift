@@ -1,6 +1,6 @@
 import Foundation
 
-typealias CurrentDay = Day6
+typealias CurrentDay = Day7
 
 let testInput = """
 <Insert your test input here>
