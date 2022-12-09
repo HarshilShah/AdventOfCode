@@ -3,7 +3,7 @@ import Collections
 import Foundation
 import RegexBuilder
 
-struct Point: Hashable {
+fileprivate struct Point: Hashable {
 	var x: Int
 	var y: Int
 	
