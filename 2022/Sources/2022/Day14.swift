@@ -3,7 +3,7 @@ import Collections
 import Foundation
 import RegexBuilder
 
-extension StringProtocol {
+fileprivate extension StringProtocol {
 	var integers: [Int] {
 		return self
 			.split{ "0123456789".contains($0) == false }
