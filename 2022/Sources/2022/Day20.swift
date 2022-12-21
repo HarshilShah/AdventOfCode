@@ -107,7 +107,7 @@ struct Day20: Day {
 	func mix(nodes queue: Deque<Node>, count: Int) {
 		var queue = queue
 		
-		while var current = queue.popFirst() {
+		while let current = queue.popFirst() {
 			if current.value == 0 {
 				continue
 			} else if current.value < 0 {

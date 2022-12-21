@@ -116,7 +116,7 @@ struct Day19: Day {
 		var queue = Deque([Game()])
 		var visited: Set<Game> = []
 		
-		while var game = queue.popFirst() {
+		while let game = queue.popFirst() {
 			if visited.insert(game).inserted == false {
 				continue
 			}
