@@ -2,7 +2,7 @@ import Algorithms
 import Collections
 import Foundation
 
-struct Monkey: Hashable {
+fileprivate struct Monkey: Hashable {
 	var index: Int
 	var items: [Int]
 	
@@ -32,7 +32,7 @@ struct Day11: Day {
 			.description
 	}
 	
-	func solve(rounds: Int, shouldReduceWorries: Bool) -> Int {
+	fileprivate func solve(rounds: Int, shouldReduceWorries: Bool) -> Int {
 		var monkeys = input
 			.components(separatedBy: "\n\n")
 			.map { parseMonkey($0) }
@@ -72,7 +72,7 @@ struct Day11: Day {
 		return inspections.values.max(count: 2).reduce(1, *)
 	}
 	
-	func parseMonkey(_ text: String) -> Monkey {
+	fileprivate func parseMonkey(_ text: String) -> Monkey {
 		let lines = text.split(separator: "\n")
 		return Monkey(
 			index: Int(lines[0].split(separator: " ").last!.dropLast(1))!,
